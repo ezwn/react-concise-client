@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import { useCallback } from "react";
 import { createBroadcastContext } from "react-concise";
 
 export interface ApiClientConfig extends AxiosRequestConfig {}
@@ -42,17 +43,25 @@ export const createApiClient = (config: ApiClientConfig): ApiClient => {
     return axiosInstance;
 }
 
-export const useApiClientConfig = (key: string) => {
+export const useGetApiClientConfig = () => {
     const configMap = apiClientContext.useContext().configMap;
 
-    const config = configMap[key];
+    return useCallback((key: string) => {
+        const config = configMap[key];
 
-    if (!config) {
-        throw (new Error(`useApiClient has been called with a key ${key} for which no client is defined.`));
-    }
+        if (!config) {
+            throw (new Error(`useGetApiClientConfig has been called with a key ${key} for which no client is defined.`));
+        }
+    
+        return config;
+    }, [configMap]);
+}
 
-    return config;
-};
+export const useGetApiClient = () => {
+    const getApiClientConfig = useGetApiClientConfig();;
 
-export const useApiClient = (key: string) => 
-    createApiClient(useApiClientConfig(key));
+    return useCallback((key: string) => {
+        const config = getApiClientConfig(key);
+        return createApiClient(config)
+    }, [getApiClientConfig]);
+}

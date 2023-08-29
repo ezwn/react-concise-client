@@ -1,6 +1,6 @@
 # react-concise-client
 
-**Version**: 2.0.0-2023-05-29
+**Version**: 2.1.0-2023-09-03
 
 A convenient REST client integrated with React.
 
